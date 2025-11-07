@@ -72,6 +72,8 @@ public class NestingResult
     public double WastePercentage { get; set; }
     public double TotalArea { get; set; }
     public double UsedArea { get; set; }
+    public Sheet? OptimizedSheet { get; set; } // Optimized sheet size if enabled
+    public bool IsOptimizedSize { get; set; } // True if sheet size was optimized
 }
 
 public class NestingRequest
@@ -93,6 +95,11 @@ public class NestingOptions
     public bool AllowRotation { get; set; } = true;
     public List<double> AllowedRotations { get; set; } = new() { 0, 90, 180, 270 };
     public int MaxIterations { get; set; } = 1000;
+    public bool OptimizeSheetSize { get; set; } = false; // Enable automatic sheet size optimization
+    public double MinSheetWidth { get; set; } = 200; // mm
+    public double MaxSheetWidth { get; set; } = 1000; // mm
+    public double MinSheetHeight { get; set; } = 200; // mm
+    public double MaxSheetHeight { get; set; } = 1000; // mm
 }
 
 public class ManualAdjustmentRequest

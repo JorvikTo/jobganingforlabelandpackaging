@@ -45,6 +45,33 @@
               Allow Rotation
             </label>
           </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" v-model="options.optimizeSheetSize" />
+              Optimize Sheet Size (find best size within range)
+            </label>
+          </div>
+          <div v-if="options.optimizeSheetSize" class="sheet-size-range">
+            <h4>Sheet Size Range</h4>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label>Min Width (mm)</label>
+                <input v-model.number="options.minSheetWidth" type="number" min="100" />
+              </div>
+              <div class="form-group">
+                <label>Max Width (mm)</label>
+                <input v-model.number="options.maxSheetWidth" type="number" min="100" />
+              </div>
+              <div class="form-group">
+                <label>Min Height (mm)</label>
+                <input v-model.number="options.minSheetHeight" type="number" min="100" />
+              </div>
+              <div class="form-group">
+                <label>Max Height (mm)</label>
+                <input v-model.number="options.maxSheetHeight" type="number" min="100" />
+              </div>
+            </div>
+          </div>
           <button @click="optimize" class="btn btn-primary" :disabled="optimizing">
             {{ optimizing ? 'Optimizing...' : '🎯 Optimize Layout' }}
           </button>
@@ -56,6 +83,10 @@
       
       <div v-if="result" class="optimization-result">
         <h3>Optimization Result</h3>
+        <div v-if="result.isOptimizedSize" class="optimized-sheet-info">
+          <p class="success-note">✨ Optimized sheet size found!</p>
+          <p><strong>Sheet Size:</strong> {{ result.optimizedSheet.width.toFixed(0) }} x {{ result.optimizedSheet.height.toFixed(0) }} mm</p>
+        </div>
         <div class="metrics">
           <div class="metric">
             <strong>Placements:</strong> {{ result.placements.length }}
@@ -102,7 +133,12 @@ export default {
     const dieLineQuantities = ref({})
     const options = ref({
       spacing: 5,
-      allowRotation: true
+      allowRotation: true,
+      optimizeSheetSize: false,
+      minSheetWidth: 200,
+      maxSheetWidth: 1000,
+      minSheetHeight: 200,
+      maxSheetHeight: 1000
     })
     const result = ref(null)
     const optimizing = ref(false)
@@ -160,7 +196,11 @@ export default {
       if (!canvas.value || !result.value) return
       
       const ctx = canvas.value.getContext('2d')
-      const sheet = sheets.value.find(s => s.id === selectedSheetId.value)
+      // Use optimized sheet if available, otherwise use selected sheet
+      const sheet = result.value.isOptimizedSize && result.value.optimizedSheet
+        ? result.value.optimizedSheet
+        : sheets.value.find(s => s.id === selectedSheetId.value)
+      
       if (!sheet) return
       
       // Clear canvas
@@ -321,8 +361,40 @@ export default {
   border-top: 1px solid #dee2e6;
 }
 
+.sheet-size-range {
+  background: #e7f5ff;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  border-left: 4px solid #42b983;
+}
+
+.sheet-size-range h4 {
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+}
+
 .optimization-result {
   margin-top: 2rem;
+}
+
+.optimized-sheet-info {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.optimized-sheet-info .success-note {
+  color: #155724;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.optimized-sheet-info p {
+  color: #155724;
+  margin: 0.25rem 0;
 }
 
 .metrics {
