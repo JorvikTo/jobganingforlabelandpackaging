@@ -6,8 +6,13 @@
       
       <div class="features grid grid-2">
         <div class="feature-card">
+          <h3>📦 Job Import with Artwork</h3>
+          <p>Import complete PDF artwork files with spot color die lines. The system automatically extracts the die line for nesting.</p>
+        </div>
+        
+        <div class="feature-card">
           <h3>📄 Die Line Import</h3>
-          <p>Import PDF (with spot colors) and DXF files for your label and packaging designs.</p>
+          <p>Import standalone PDF (with spot colors) and DXF files for your label and packaging designs.</p>
         </div>
         
         <div class="feature-card">
@@ -19,17 +24,13 @@
           <h3>✋ Manual Arrangement</h3>
           <p>Fine-tune layouts with interactive drag-and-drop canvas interface.</p>
         </div>
-        
-        <div class="feature-card">
-          <h3>📊 Waste Calculation</h3>
-          <p>Real-time material utilization metrics and waste percentage tracking.</p>
-        </div>
       </div>
       
       <div class="quick-start">
         <h2>Quick Start</h2>
         <ol>
-          <li>Upload your die lines (PDF or DXF)</li>
+          <li>Import a job with PDF artwork (includes spot color die line)</li>
+          <li>Or upload standalone die lines (PDF or DXF)</li>
           <li>Create or select a sheet size</li>
           <li>Run automatic optimization or arrange manually</li>
           <li>Export print-ready PDF with registration marks</li>
@@ -37,7 +38,7 @@
       </div>
       
       <div class="actions">
-        <router-link to="/die-lines" class="btn btn-primary">Get Started →</router-link>
+        <router-link to="/jobs" class="btn btn-primary">Import Job with Artwork →</router-link>
       </div>
     </div>
   </div>

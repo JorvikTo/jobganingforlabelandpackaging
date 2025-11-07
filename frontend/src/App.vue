@@ -4,6 +4,7 @@
       <h1>Job Ganging Software</h1>
       <nav>
         <router-link to="/">Home</router-link>
+        <router-link to="/jobs">Jobs</router-link>
         <router-link to="/die-lines">Die Lines</router-link>
         <router-link to="/sheets">Sheets</router-link>
         <router-link to="/ganging">Ganging</router-link>

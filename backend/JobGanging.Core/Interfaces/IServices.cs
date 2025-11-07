@@ -10,6 +10,14 @@ public interface IDieLineService
     Task DeleteDieLineAsync(Guid id);
 }
 
+public interface IJobService
+{
+    Task<JobImportResult> ImportJobWithArtworkAsync(Stream fileStream, string fileName, JobImportRequest request);
+    Task<List<Job>> GetAllJobsAsync();
+    Task<Job?> GetJobAsync(Guid id);
+    Task DeleteJobAsync(Guid id);
+}
+
 public interface INestingService
 {
     Task<NestingResult> OptimizeLayoutAsync(NestingRequest request);

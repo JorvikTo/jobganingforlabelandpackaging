@@ -24,6 +24,7 @@ builder.Services.AddCors(options =>
 
 // Register application services
 builder.Services.AddScoped<IDieLineService, DieLineService>();
+builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<INestingService, NestingService>();
 builder.Services.AddScoped<ISheetService, SheetService>();
 builder.Services.AddScoped<IExportService, ExportService>();

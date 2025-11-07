@@ -34,6 +34,34 @@ export const dieLineService = {
   }
 }
 
+export const jobService = {
+  async importJobWithArtwork(file, jobName, dieLineSpotColorName = 'CutContour', quantity = 1) {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('jobName', jobName)
+    formData.append('dieLineSpotColorName', dieLineSpotColorName)
+    formData.append('quantity', quantity.toString())
+    const response = await api.post('/Job/import-with-artwork', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return response.data
+  },
+
+  async getAllJobs() {
+    const response = await api.get('/Job')
+    return response.data
+  },
+
+  async getJob(id) {
+    const response = await api.get(`/Job/${id}`)
+    return response.data
+  },
+
+  async deleteJob(id) {
+    await api.delete(`/Job/${id}`)
+  }
+}
+
 export const sheetService = {
   async createSheet(sheetData) {
     const response = await api.post('/Sheet', sheetData)

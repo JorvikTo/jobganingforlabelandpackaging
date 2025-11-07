@@ -11,6 +11,21 @@ public class DieLine
     public List<SpotColor> SpotColors { get; set; } = new();
     public DateTime CreatedAt { get; set; }
     public string RawData { get; set; } = string.Empty; // Base64 encoded file data
+    public Guid? JobId { get; set; } // Link to parent job if extracted from artwork
+    public bool HasArtwork { get; set; } // True if die line was extracted from artwork PDF
+    public string? ArtworkData { get; set; } // Base64 encoded artwork (without die line)
+}
+
+public class Job
+{
+    public Guid Id { get; set; }
+    public string JobName { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public string ArtworkData { get; set; } = string.Empty; // Full artwork PDF with die lines
+    public Guid? ExtractedDieLineId { get; set; } // Die line extracted from artwork
+    public string DieLineSpotColorName { get; set; } = string.Empty; // Spot color used for die line
+    public int Quantity { get; set; } = 1;
 }
 
 public class Point
@@ -114,4 +129,20 @@ public class ExportRequest
     public bool IncludeRegistrationMarks { get; set; } = true;
     public bool IncludeCropMarks { get; set; } = true;
     public double BleedSize { get; set; } = 3.0; // mm
+}
+
+public class JobImportRequest
+{
+    public string JobName { get; set; } = string.Empty;
+    public string DieLineSpotColorName { get; set; } = "CutContour"; // Default spot color name for die lines
+    public int Quantity { get; set; } = 1;
+}
+
+public class JobImportResult
+{
+    public Guid JobId { get; set; }
+    public Guid DieLineId { get; set; }
+    public string JobName { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
+    public List<string> DetectedSpotColors { get; set; } = new();
 }
