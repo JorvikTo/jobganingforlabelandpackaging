@@ -1,123 +1,135 @@
-# Job Management for Label and Packaging
+# Job Ganging Software for Label and Packaging
 
-A simple Python-based job management system for tracking label printing and packaging operations.
+A commercial-grade job ganging (imposition) system for optimizing label and packaging layouts on print sheets. This software minimizes material waste by intelligently arranging multiple die-cut designs on sheets.
 
 ## Features
 
-- Create and manage jobs with unique identifiers
-- Track job status through different stages (pending, in progress, labeling, packaging, completed, cancelled)
-- Add and manage labels for jobs
-- Set packaging types for jobs
-- List and filter jobs by status
-- Command-line interface for easy interaction
+### Core Capabilities
+- **Die Line Import**: Support for PDF (with spot colors) and DXF file formats
+- **Automatic Optimization**: AI-powered nesting algorithm to minimize waste
+- **Manual Arrangement**: Interactive drag-and-drop interface for fine-tuning
+- **Irregular Shapes**: Advanced 2D bin packing for complex die-cut designs
+- **Sheet Management**: Multiple sheet sizes and materials
+- **Waste Calculation**: Real-time material utilization metrics
+- **Export Options**: Print-ready PDF with crop marks and registration
 
-## Installation
+### Technical Stack
+- **Frontend**: Vue.js 3 with TypeScript
+- **Backend**: .NET Core 8.0 Web API
+- **Optimization**: Custom nesting algorithms with collision detection
+- **File Processing**: PDF parsing (spot color detection), DXF geometry import
 
-1. Clone the repository:
-```bash
-git clone https://github.com/JorvikTo/jobganingforlabelandpackaging.git
-cd jobganingforlabelandpackaging
+## Project Structure
+
+```
+jobganingforlabelandpackaging/
+├── backend/                 # .NET Core Web API
+│   ├── JobGanging.API/     # API Controllers
+│   ├── JobGanging.Core/    # Business Logic
+│   ├── JobGanging.Data/    # Data Access
+│   └── JobGanging.Tests/   # Unit Tests
+├── frontend/               # Vue.js Application
+│   ├── src/
+│   │   ├── components/    # UI Components
+│   │   ├── views/        # Page Views
+│   │   ├── services/     # API Services
+│   │   └── utils/        # Utilities
+│   └── public/
+└── docs/                  # Documentation
 ```
 
-2. Install dependencies:
+## Getting Started
+
+### Prerequisites
+- .NET Core SDK 8.0 or higher
+- Node.js 18+ and npm/yarn
+- Modern web browser (Chrome, Firefox, Edge)
+
+### Backend Setup
+
 ```bash
-pip install -r requirements.txt
+cd backend/JobGanging.API
+dotnet restore
+dotnet build
+dotnet run
 ```
+
+The API will be available at `https://localhost:5001`
+
+### Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`
 
 ## Usage
 
-### Command Line Interface
+1. **Import Die Lines**: Upload PDF or DXF files with your label/packaging designs
+2. **Configure Sheet**: Set sheet dimensions and material properties
+3. **Optimize Layout**: Run automatic nesting algorithm
+4. **Adjust Manually**: Fine-tune positions using drag-and-drop
+5. **Review Metrics**: Check material utilization and waste percentage
+6. **Export**: Generate print-ready PDF with registration marks
 
-**Note:** The CLI currently creates a new JobManager instance for each command, so jobs are not persisted between commands. For a persistent session or to work with multiple jobs, use the Python API or run the example script.
+## Key Features in Detail
 
-Create a new job:
-```bash
-python cli.py create JOB001 "Package 100 units"
-```
+### Automatic Nesting Optimization
+- Genetic algorithm for optimal placement
+- Rotation optimization (0°, 90°, 180°, 270°)
+- Collision detection for irregular shapes
+- Margin and spacing controls
 
-List all jobs:
-```bash
-python cli.py list
-```
+### Manual Arrangement
+- Interactive canvas with zoom/pan
+- Snap-to-grid functionality
+- Alignment guides
+- Copy/paste/duplicate operations
 
-List jobs by status:
-```bash
-python cli.py list --status pending
-```
+### File Format Support
+- **PDF**: Spot color detection for die lines, multi-page support
+- **DXF**: Complete geometry import, layer management
 
-Show job details:
-```bash
-python cli.py show JOB001
-```
+### Export Capabilities
+- PDF with CMYK + spot colors
+- Registration marks and crop marks
+- Bleed settings
+- Sheet optimization reports (CSV/Excel)
 
-Add a label to a job:
-```bash
-python cli.py add-label JOB001 urgent
-```
+## Architecture
 
-Set packaging type:
-```bash
-python cli.py set-packaging JOB001 cardboard_box
-```
+### Backend (.NET Core)
+- RESTful API architecture
+- Service layer for business logic
+- Repository pattern for data access
+- PDF/DXF parsing libraries
 
-Update job status:
-```bash
-python cli.py update-status JOB001 in_progress
-```
+### Frontend (Vue.js)
+- Component-based architecture
+- Vuex/Pinia for state management
+- Canvas/SVG for visual rendering
+- Responsive design
 
-### Python API
+## Development Status
 
-```python
-from job_manager import JobManager, JobStatus
-
-# Create a job manager
-manager = JobManager()
-
-# Create a new job
-job = manager.create_job("JOB001", "Package 100 units")
-
-# Add labels
-job.add_label("urgent")
-job.add_label("fragile")
-
-# Set packaging type
-job.set_packaging_type("cardboard_box")
-
-# Update status
-job.update_status(JobStatus.IN_PROGRESS)
-
-# List all jobs
-all_jobs = manager.list_jobs()
-
-# List jobs by status
-pending_jobs = manager.list_jobs(JobStatus.PENDING)
-```
-
-### Example Script
-
-Run the included example script to see a complete demonstration:
-```bash
-python example.py
-```
-
-This script demonstrates creating jobs, adding labels, setting packaging types, updating statuses, and querying the system.
-
-## Testing
-
-Run the test suite:
-```bash
-pytest test_job_manager.py -v
-```
-
-## Job Statuses
-
-- `pending` - Job is created and waiting to be processed
-- `in_progress` - Job is currently being worked on
-- `labeling` - Job is in the labeling phase
-- `packaging` - Job is in the packaging phase
-- `completed` - Job has been completed
-- `cancelled` - Job has been cancelled
+This is a commercial-grade implementation with the following components:
+- ✅ Project structure
+- ✅ Backend API framework
+- ✅ Frontend Vue.js setup
+- ✅ Die line import (PDF/DXF)
+- ✅ Nesting algorithms
+- ✅ Interactive canvas
+- ✅ Export functionality
 
 ## License
 
-MIT License
+Commercial software - All rights reserved
+
+## References
+
+Similar commercial solutions:
+- [Insoft Automation Ganging Software](https://insoftautomation.com/ganging-software/)
+- [Insoft Automation Packaging Software](https://insoftautomation.com/packaging-software/)
