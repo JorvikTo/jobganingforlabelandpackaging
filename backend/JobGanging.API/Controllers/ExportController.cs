@@ -1,4 +1,5 @@
 using JobGanging.Core.Interfaces;
+using JobGanging.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobGanging.API.Controllers;
