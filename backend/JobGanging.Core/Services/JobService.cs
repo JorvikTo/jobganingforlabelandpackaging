@@ -66,11 +66,21 @@ public class JobService : IJobService
         };
 
         // TODO: Implement actual PDF parsing with PdfSharp to:
-        // 1. Detect all spot colors in the PDF
+        // 1. Detect all spot colors in the PDF using PdfSharp.Pdf.Advanced
         // 2. Extract paths/vectors that use the specified spot color
-        // 3. Convert those paths to die line outline points
-        // 4. Calculate bounding box dimensions
-        // 5. Separate artwork from die line
+        // 3. Convert those paths to die line outline points using coordinate transformation
+        // 4. Calculate bounding box dimensions from the extracted geometry
+        // 5. Separate artwork from die line by removing or isolating the spot color layer
+        //
+        // Implementation approach:
+        // - Use PdfSharp.Pdf.IO.PdfReader to open the PDF
+        // - Iterate through pages and extract content streams
+        // - Parse color space definitions to identify spot colors
+        // - Extract path operations (moveto, lineto, curveto) for die line geometry
+        // - Transform coordinates from PDF space to die line coordinate system
+        //
+        // Expected timeline: Production implementation requires PdfSharp advanced features
+        // Reference: https://docs.pdfsharp.net/PDFsharp/index.html
 
         // For now, simulate the extraction with sample data
         var detectedSpotColors = new List<string> 
@@ -124,12 +134,12 @@ public class JobService : IJobService
 
     public async Task<List<Job>> GetAllJobsAsync()
     {
-        return await Task.FromResult(_jobs.ToList());
+        return _jobs.ToList();
     }
 
     public async Task<Job?> GetJobAsync(Guid id)
     {
-        return await Task.FromResult(_jobs.FirstOrDefault(j => j.Id == id));
+        return _jobs.FirstOrDefault(j => j.Id == id);
     }
 
     public async Task DeleteJobAsync(Guid id)

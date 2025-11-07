@@ -25,6 +25,16 @@ public class JobController : ControllerBase
         if (fileExtension != ".pdf")
             return BadRequest("Only PDF files with artwork are supported for job import");
 
+        // Validate inputs
+        if (quantity <= 0)
+            return BadRequest("Quantity must be greater than 0");
+
+        if (!string.IsNullOrEmpty(jobName) && jobName.Length > 200)
+            return BadRequest("Job name must be 200 characters or less");
+
+        if (!string.IsNullOrEmpty(dieLineSpotColorName) && dieLineSpotColorName.Length > 100)
+            return BadRequest("Spot color name must be 100 characters or less");
+
         var request = new JobImportRequest
         {
             JobName = jobName ?? Path.GetFileNameWithoutExtension(file.FileName),

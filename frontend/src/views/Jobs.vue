@@ -124,7 +124,7 @@ export default {
         jobs.value = await jobService.getAllJobs()
       } catch (error) {
         console.error('Failed to load jobs:', error)
-        alert('Failed to load jobs. Make sure the backend is running.')
+        alert('Unable to load jobs. Please try again or contact support if the problem persists.')
       } finally {
         loading.value = false
       }
@@ -170,7 +170,8 @@ export default {
         
       } catch (error) {
         console.error('Failed to import job:', error)
-        alert('Failed to import job. Make sure the backend is running and the PDF contains a spot color die line.')
+        const errorMsg = error.response?.data?.message || error.message || 'Unknown error'
+        alert(`Failed to import job: ${errorMsg}. Please check your file and try again.`)
       } finally {
         importing.value = false
       }
