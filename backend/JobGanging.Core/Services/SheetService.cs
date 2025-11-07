@@ -1,11 +1,18 @@
 using JobGanging.Core.Interfaces;
 using JobGanging.Core.Models;
+using JobGanging.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobGanging.Core.Services;
 
 public class SheetService : ISheetService
 {
-    private readonly List<Sheet> _sheets = new();
+    private readonly ApplicationDbContext _dbContext;
+
+    public SheetService(ApplicationDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public async Task<Sheet> CreateSheetAsync(SheetRequest request)
     {
@@ -23,23 +30,30 @@ public class SheetService : ISheetService
             CreatedAt = DateTime.UtcNow
         };
 
-        _sheets.Add(sheet);
-        return await Task.FromResult(sheet);
+        _dbContext.Sheets.Add(sheet);
+        await _dbContext.SaveChangesAsync();
+
+        return sheet;
     }
 
     public async Task<List<Sheet>> GetAllSheetsAsync()
     {
-        return await Task.FromResult(_sheets.ToList());
+        return await _dbContext.Sheets
+            .AsNoTracking()
+            .OrderByDescending(s => s.CreatedAt)
+            .ToListAsync();
     }
 
     public async Task<Sheet?> GetSheetAsync(Guid id)
     {
-        return await Task.FromResult(_sheets.FirstOrDefault(s => s.Id == id));
+        return await _dbContext.Sheets
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<Sheet> UpdateSheetAsync(Guid id, SheetRequest request)
     {
-        var sheet = _sheets.FirstOrDefault(s => s.Id == id);
+        var sheet = await _dbContext.Sheets.FindAsync(id);
         if (sheet == null)
             throw new InvalidOperationException("Sheet not found");
 
@@ -52,16 +66,18 @@ public class SheetService : ISheetService
         sheet.MarginRight = request.MarginRight;
         sheet.Material = request.Material;
 
-        return await Task.FromResult(sheet);
+        await _dbContext.SaveChangesAsync();
+
+        return sheet;
     }
 
     public async Task DeleteSheetAsync(Guid id)
     {
-        var sheet = _sheets.FirstOrDefault(s => s.Id == id);
+        var sheet = await _dbContext.Sheets.FindAsync(id);
         if (sheet != null)
         {
-            _sheets.Remove(sheet);
+            _dbContext.Sheets.Remove(sheet);
+            await _dbContext.SaveChangesAsync();
         }
-        await Task.CompletedTask;
     }
 }

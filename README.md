@@ -15,7 +15,7 @@ A commercial-grade job ganging (imposition) system for optimizing label and pack
 
 ### Technical Stack
 - **Frontend**: Vue.js 3 with TypeScript
-- **Backend**: .NET Core 8.0 Web API
+- **Backend**: .NET 9 Web API
 - **Optimization**: Custom nesting algorithms with collision detection
 - **File Processing**: PDF parsing (spot color detection), DXF geometry import
 
@@ -41,20 +41,20 @@ jobganingforlabelandpackaging/
 ## Getting Started
 
 ### Prerequisites
-- .NET Core SDK 8.0 or higher
+- .NET SDK 9.0 or higher
 - Node.js 18+ and npm/yarn
 - Modern web browser (Chrome, Firefox, Edge)
 
 ### Backend Setup
 
 ```bash
-cd backend/JobGanging.API
+cd backend
 dotnet restore
-dotnet build
-dotnet run
+dotnet dev-certs https --trust  # trust the HTTPS dev certificate once
+dotnet run --project JobGanging.API/JobGanging.API.csproj
 ```
 
-The API will be available at `https://localhost:5001`
+The API listens on `http://localhost:5005` (Swagger UI at `/swagger`). Leave this terminal running.
 
 ### Frontend Setup
 
@@ -64,7 +64,15 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+Vite serves the app at `http://localhost:5173`. Keep this process running in its own terminal.
+
+### Running Both Services Together
+
+1. Open two terminal windows or tabs.
+2. In the first, follow the backend setup steps to start the ASP.NET Core API.
+3. In the second, follow the frontend setup steps to launch the Vue.js dev server.
+4. Visit `http://localhost:5173` in a browser; the frontend targets the API at `http://localhost:5005/api`.
+5. If you prefer HTTPS locally, configure a developer certificate and update `API_BASE_URL` accordingly.
 
 ## Usage
 
@@ -101,7 +109,7 @@ The application will be available at `http://localhost:5173`
 
 ## Architecture
 
-### Backend (.NET Core)
+### Backend (.NET)
 - RESTful API architecture
 - Service layer for business logic
 - Repository pattern for data access

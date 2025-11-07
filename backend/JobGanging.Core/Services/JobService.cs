@@ -1,15 +1,18 @@
 using JobGanging.Core.Interfaces;
 using JobGanging.Core.Models;
+using JobGanging.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobGanging.Core.Services;
 
 public class JobService : IJobService
 {
-    private readonly List<Job> _jobs = new();
+    private readonly ApplicationDbContext _dbContext;
     private readonly IDieLineService _dieLineService;
 
-    public JobService(IDieLineService dieLineService)
+    public JobService(ApplicationDbContext dbContext, IDieLineService dieLineService)
     {
+        _dbContext = dbContext;
         _dieLineService = dieLineService;
     }
 
@@ -35,7 +38,9 @@ public class JobService : IJobService
         var (dieLine, detectedSpotColors) = await ExtractDieLineFromPdfAsync(fileBytes, fileName, request.DieLineSpotColorName, job.Id);
         
         job.ExtractedDieLineId = dieLine.Id;
-        _jobs.Add(job);
+
+        _dbContext.Jobs.Add(job);
+        await _dbContext.SaveChangesAsync();
 
         return new JobImportResult
         {
@@ -134,17 +139,22 @@ public class JobService : IJobService
 
     public async Task<List<Job>> GetAllJobsAsync()
     {
-        return _jobs.ToList();
+        return await _dbContext.Jobs
+            .AsNoTracking()
+            .OrderByDescending(j => j.CreatedAt)
+            .ToListAsync();
     }
 
     public async Task<Job?> GetJobAsync(Guid id)
     {
-        return _jobs.FirstOrDefault(j => j.Id == id);
+        return await _dbContext.Jobs
+            .AsNoTracking()
+            .FirstOrDefaultAsync(j => j.Id == id);
     }
 
     public async Task DeleteJobAsync(Guid id)
     {
-        var job = _jobs.FirstOrDefault(j => j.Id == id);
+        var job = await _dbContext.Jobs.FindAsync(id);
         if (job != null)
         {
             // Also delete the associated die line
@@ -152,8 +162,9 @@ public class JobService : IJobService
             {
                 await _dieLineService.DeleteDieLineAsync(job.ExtractedDieLineId.Value);
             }
-            _jobs.Remove(job);
+
+            _dbContext.Jobs.Remove(job);
+            await _dbContext.SaveChangesAsync();
         }
-        await Task.CompletedTask;
     }
 }

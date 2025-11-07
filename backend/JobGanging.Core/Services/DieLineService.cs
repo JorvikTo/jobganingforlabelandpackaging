@@ -1,12 +1,18 @@
 using JobGanging.Core.Interfaces;
 using JobGanging.Core.Models;
-using System.Text;
+using JobGanging.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobGanging.Core.Services;
 
 public class DieLineService : IDieLineService
 {
-    private readonly List<DieLine> _dieLines = new();
+    private readonly ApplicationDbContext _dbContext;
+
+    public DieLineService(ApplicationDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public async Task<DieLine> ImportDieLineAsync(Stream fileStream, string fileExtension, string fileName)
     {
@@ -33,7 +39,9 @@ public class DieLineService : IDieLineService
             dieLine = await ParseDxfDieLineAsync(fileBytes, dieLine);
         }
 
-        _dieLines.Add(dieLine);
+        _dbContext.DieLines.Add(dieLine);
+        await _dbContext.SaveChangesAsync();
+
         return dieLine;
     }
 
@@ -83,21 +91,26 @@ public class DieLineService : IDieLineService
 
     public async Task<List<DieLine>> GetAllDieLinesAsync()
     {
-        return await Task.FromResult(_dieLines.ToList());
+        return await _dbContext.DieLines
+            .AsNoTracking()
+            .OrderByDescending(d => d.CreatedAt)
+            .ToListAsync();
     }
 
     public async Task<DieLine?> GetDieLineAsync(Guid id)
     {
-        return await Task.FromResult(_dieLines.FirstOrDefault(d => d.Id == id));
+        return await _dbContext.DieLines
+            .AsNoTracking()
+            .FirstOrDefaultAsync(d => d.Id == id);
     }
 
     public async Task DeleteDieLineAsync(Guid id)
     {
-        var dieLine = _dieLines.FirstOrDefault(d => d.Id == id);
+        var dieLine = await _dbContext.DieLines.FindAsync(id);
         if (dieLine != null)
         {
-            _dieLines.Remove(dieLine);
+            _dbContext.DieLines.Remove(dieLine);
+            await _dbContext.SaveChangesAsync();
         }
-        await Task.CompletedTask;
     }
 }
