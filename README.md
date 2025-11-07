@@ -28,6 +28,8 @@ pip install -r requirements.txt
 
 ### Command Line Interface
 
+**Note:** The CLI currently creates a new JobManager instance for each command, so jobs are not persisted between commands. For a persistent session or to work with multiple jobs, use the Python API or run the example script.
+
 Create a new job:
 ```bash
 python cli.py create JOB001 "Package 100 units"
@@ -90,6 +92,15 @@ all_jobs = manager.list_jobs()
 # List jobs by status
 pending_jobs = manager.list_jobs(JobStatus.PENDING)
 ```
+
+### Example Script
+
+Run the included example script to see a complete demonstration:
+```bash
+python example.py
+```
+
+This script demonstrates creating jobs, adding labels, setting packaging types, updating statuses, and querying the system.
 
 ## Testing
 

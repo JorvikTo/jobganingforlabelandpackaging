@@ -7,7 +7,7 @@ and packaging operations.
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 class JobStatus(Enum):
@@ -62,7 +62,7 @@ class JobManager:
     """Manages all jobs in the system"""
     
     def __init__(self):
-        self.jobs: dict[str, Job] = {}
+        self.jobs: Dict[str, Job] = {}
     
     def create_job(self, job_id: str, description: str) -> Job:
         """Create a new job"""
